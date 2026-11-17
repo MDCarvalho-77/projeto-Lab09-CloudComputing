@@ -1,0 +1,10 @@
+# Credenciais locais (não versionar)
+.env
+
+# Temporários
+*.tmp
+evidencias/*.tmp
+
+# As evidências (.log) e o dump de backup (.sql) SÃO versionados de propósito:
+# são a prova real da execução da atividade acadêmica. Por isso NÃO são
+# ignorados. (Em um projeto de produção, dumps/segredos ficariam fora do Git.)

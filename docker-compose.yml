@@ -1,0 +1,43 @@
+# =============================================================================
+# Atividade Prática - Aula 9 (Computação em Nuvem)
+# Laboratório independente de PostgreSQL com Docker.
+#
+# Esta stack NÃO tem relação com o Backend/ nem com o frontend/ do Radar ENEM.
+# Usa dados fictícios e um volume Docker nomeado próprio para demonstrar
+# persistência de dados.
+# =============================================================================
+
+services:
+  radar-db:
+    image: postgres:16
+    container_name: radar-db
+    environment:
+      POSTGRES_DB: radar
+      POSTGRES_USER: radar
+      POSTGRES_PASSWORD: radar_lab_123
+    ports:
+      # -----------------------------------------------------------------------
+      # ATENÇÃO - conflito de porta no host:
+      # A porta 5432 do HOST já estava ocupada por um PostgreSQL nativo do
+      # Windows durante o diagnóstico. Por isso o mapeamento externo usa 5433.
+      # Dentro do container o PostgreSQL continua em 5432 (como pede o roteiro).
+      #
+      # Se o Postgres nativo for parado e você quiser o mapeamento literal
+      # 5432:5432 do roteiro, troque a linha abaixo por:  "5432:5432"
+      # -----------------------------------------------------------------------
+      - "5433:5432"
+    volumes:
+      # Volume nomeado -> demonstra a persistência dos dados (etapa 5).
+      # Montado no diretório padrão de dados do PostgreSQL.
+      - radar-db-dados:/var/lib/postgresql/data
+      # Scripts de inicialização: o PostgreSQL executa *.sql desta pasta
+      # automaticamente APENAS na primeira criação do volume (quando o
+      # diretório de dados está vazio).
+      - ./init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+
+volumes:
+  # 'name' explícito evita o prefixo automático do projeto
+  # (ex.: lab-aula9-postgres_radar-db-dados). Garante o nome EXATO exigido.
+  radar-db-dados:
+    name: radar-db-dados
